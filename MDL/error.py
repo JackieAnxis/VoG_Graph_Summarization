@@ -153,7 +153,7 @@ class Error :
                     mystr += "1";
                 else :
                     mystr += "-";
-            print mystr;
+            print(mystr);
 
     def plotError(self):
         for idx in range(len(self.unmodelled)) : # uses 'unmodelled' only as numNodes
@@ -171,7 +171,7 @@ class Error :
                         mystr += "1";
                     else :
                         mystr += "0";
-            print mystr;
+            print(mystr);
 
     def plotExcluded(self):
         for idx in range(len(self.excluded)) :
@@ -181,15 +181,15 @@ class Error :
                     mystr += "1";
                 else :
                     mystr += "0";
-            print mystr;
+            print(mystr);
 
     def listCover(self):
-        print self.covered;
+        print(self.covered);
     
     def listError(self):
         for idx in range(len(self.unmodelled)) :
             if len(self.unmodelled[idx]) > 0 :
-                print idx+1, "+: "+str([x+1 for x in self.unmodelled[idx]]), "-: "+str([x+1 for x in self.modelled[idx]]),;
+                print(idx+1, "+: "+str([x+1 for x in self.unmodelled[idx]]), "-: "+str([x+1 for x in self.modelled[idx]]), end=' ');
 
     def listExcluded(self):
-        print self.excluded;
+        print(self.excluded);

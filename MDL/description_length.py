@@ -16,7 +16,7 @@ def CalcCliqueNumPosEdges(numEdges):
 def choose(n, k):
  if 0 <= k <= n:
    p = 1
-   for t in xrange(min(k, n - k)):
+   for t in range(min(k, n - k)):
      p = (p * (n - t)) // (t + 1)
    return p;
  else:
@@ -639,14 +639,14 @@ def LErrorNaiveBinom(G, M, E) :
     # possible number of edges in an undirected, non-self-connected graph of N nodes
     posNumEdges = (G.numNodes * G.numNodes - G.numNodes) / 2
     cost = LU(posNumEdges - E.numCellsExcluded, E.numUnmodelledErrors + E.numModellingErrors);
-    if config.optVerbosity > 1 : print ' - L_nb(E)', cost;
+    if config.optVerbosity > 1 : print(' - L_nb(E)', cost);
     return cost;
 
 def LErrorNaivePrefix(G, M, E) :
     # possible number of edges in an undirected, non-self-connected graph of N nodes
     posNumEdges = (G.numNodes * G.numNodes - G.numNodes) / 2
     cost = LnU(posNumEdges - E.numCellsExcluded, E.numModellingErrors + E.numUnmodelledErrors);
-    if config.optVerbosity > 1 : print ' - L_np(E)', cost;
+    if config.optVerbosity > 1 : print(' - L_np(E)', cost);
     return cost;
 
 # here I encode all errors uniformly by a binomial -- hence, not yet the typed advanced stuff yet!
@@ -659,20 +659,20 @@ def LErrorTypedBinom(G, M, E) :
     #print 'E.numCellsCovered, E.numCellsExcluded, E.numModellingErrors;'
     #print E.numCellsCovered, E.numCellsExcluded, E.numModellingErrors;
     costM = LU(E.numCellsCovered - E.numCellsExcluded, E.numModellingErrors);
-    if config.optVerbosity > 1 : print ' - L_tb(E+)', costM;
+    if config.optVerbosity > 1 : print(' - L_tb(E+)', costM);
 
     # Second encode the unmodelled errors
     #print 'Second encode the unmodelled errors' (excluded cells are always covered!)
     #print posNumEdges - E.numCellsCovered, E.numUnmodelledErrors;
     costU = LU(posNumEdges - E.numCellsCovered, E.numUnmodelledErrors);
-    if config.optVerbosity > 1 : print ' - L_tb(E-)', costU;
+    if config.optVerbosity > 1 : print(' - L_tb(E-)', costU);
     return costM + costU;
 
 def LErrorTypedPrefix(G, M, E) :
     # possible number of edges in an undirected, non-self-connected graph of N nodes
     posNumEdges = (G.numNodes * G.numNodes - G.numNodes) / 2
     costM = LnU(E.numCellsCovered - E.numCellsExcluded, E.numModellingErrors);
-    if config.optVerbosity > 1 : print ' - L_tp(E+)', costM;
+    if config.optVerbosity > 1 : print(' - L_tp(E+)', costM);
     costU = LnU(posNumEdges - E.numCellsCovered, E.numUnmodelledErrors);
-    if config.optVerbosity > 1 : print ' - L_tp(E-)', costU;
+    if config.optVerbosity > 1 : print(' - L_tp(E-)', costU);
     return costM + costU;

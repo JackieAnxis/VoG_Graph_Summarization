@@ -16,7 +16,7 @@ def CalcCliqueNumPosEdges(numEdges):
 def choose(n, k):
  if 0 <= k <= n:
    p = 1
-   for t in xrange(min(k, n - k)):
+   for t in range(min(k, n - k)):
      p = (p * (n - t)) // (t + 1)
    return p;
  else:

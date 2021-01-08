@@ -17,8 +17,8 @@ m = Model();
 #g.Plot();
 
 (l_total, l_model, l_error, E) = L(g,m);
-print "empty model:"
-print "  ", l_total, l_model, l_error, E.numErrors;
+print("empty model:")
+print("  ", l_total, l_model, l_error, E.numErrors);
 
 if(False) :
     m = Model();
@@ -33,16 +33,16 @@ if(False) :
     #m.addStruct(nc1);
     
     (l_total, l_model, l_error, E) = L(g,m);
-    print "model with two full cliques, resp. over nodes 1--20, and 27--38:"
-    print "  ", l_total, l_model, l_error, E.numErrors;
+    print("model with two full cliques, resp. over nodes 1--20, and 27--38:")
+    print("  ", l_total, l_model, l_error, E.numErrors);
     
 if(True) :
     m = Model();
     m.Load(mFilename);
 
     (l_total, l_model, l_error, E) = L(g,m);
-    print "model \'" + mFilename + "\'";
-    print "  ", l_total, l_model, l_error, E.numErrors;
+    print("model \'" + mFilename + "\'");
+    print("  ", l_total, l_model, l_error, E.numErrors);
     
 
 

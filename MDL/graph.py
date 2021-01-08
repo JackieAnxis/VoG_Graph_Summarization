@@ -48,4 +48,4 @@ class Graph :
                     mystr += "1";
                 else :
                     mystr += "0";
-            print mystr;
+            print(mystr);
