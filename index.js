@@ -1,5 +1,5 @@
-// const graphFileName = "./DATA/cliqueStarClique.out"
-const graphFileName = "./DATA/miserables.out"
+const graphFileName = "./DATA/cliqueStarClique.out"
+// const graphFileName = "./DATA/miserables.out"
 d3.text(graphFileName).then(function (text) {
     const rows = text.split("\n")
     const nodeSet = new Set()
@@ -77,8 +77,8 @@ d3.text(graphFileName).then(function (text) {
     netv.on("zoom")
     netv.nodes().forEach((node) => node.on("dragging"))
 
-    // const subgraphsFileName = "./DATA/cliqueStarClique_orderedALL.model"
-    const subgraphsFileName = "./DATA/miserables_orderedALL.model"
+    const subgraphsFileName = "./DATA/cliqueStarClique_ALL.model"
+    // const subgraphsFileName = "./DATA/miserables_orderedALL.model"
     d3.text(subgraphsFileName).then(function (text) {
         const rows = text.split("\n")
         const subgraphContainer = d3.select("#subgraphs")

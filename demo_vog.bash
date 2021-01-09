@@ -2,15 +2,15 @@
 
 echo ''
 echo -e "\e[34m======== Steps 1 & 2: Subgraph Generation and Labeling  ==========\e[0m"
-matlab -r run_structureDiscovery
+# matlab -r run_structureDiscovery
 echo ''
 echo 'Structure discovery finished.'
 
 name='cliqueStarClique'
 unweighted_graph="DATA/$name.out"
-model="DATA/$name_orderedALL.model"
-modelFile="$name_orderedALL.model"
-modelTop10="DATA/$name_top10ordered.model"
+model="DATA/$name""_orderedALL.model"
+modelFile="$name""_orderedALL.model"
+modelTop10="DATA/$name""_top10ordered.model"
 
 echo ''
 echo -e "\e[34m=============== Step 3: Summary Assembly ===============\e[0m"
@@ -19,7 +19,8 @@ echo -e "\e[31m=============== TOP 10 structures ===============\e[0m"
 head -n 10 $model > $modelTop10
 echo 'Computing the encoding cost...'
 echo ''
-python MDL/score.py $unweighted_graph $modelTop10  > DATA/encoding_top10.out
+python MDL/score.py $unweighted_graph $modelTop10 > DATA/encoding_top10.out
+cat DATA/encoding_top10.out
 
 echo ''
 echo 'Explanation of the above output:'
@@ -28,8 +29,6 @@ echo 'L(M): Number of bits to describe only the model.'
 echo 'L(E): Number of bits to describe only the error.'
 echo ': M_0 is the zero-model where the graph is encoded as noise (no structure is assumed).'
 echo ': M_x is the model of the graph as represented by the top-10 structures.'
-echo ''
-cat DATA/encoding_top10.out
 echo ''
 echo ''
 

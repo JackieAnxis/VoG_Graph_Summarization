@@ -41,7 +41,7 @@ all_costs = 0;
 %if nargin < 3
 %    info = false;
 %end
-[~, fname, ~] = fileparts(graphFile);
+[~, fname, ~] = fileparts(graphFile); % 获取graphFile的名字，不带路径和修饰尾缀
 allOutFile = sprintf('%s/%s_ALL.model', outFolder, fname);
 outfile_ordered = sprintf('%s/%s_orderedALL.model', outFolder, fname);
 % Open 'outfile' for writing
@@ -50,9 +50,9 @@ out_fid = fopen(allOutFile, 'w');
 % Initialize variables
 gccsize = zeros(0,0);
 niter=0;
-n = max(size(AOrig,1),size(AOrig,2));
-AOrig(n,n)=0;
-totalind = zeros(1,n);
+n = max(size(AOrig,1),size(AOrig,2)); % 获得横向、纵向的维数的最大值
+AOrig(n,n)=0; % 保证方阵
+totalind = zeros(1,n); % 1 * n 的零向量
 cur_lpos = 1;
 cur_rpos = n;
 gccind = [1:n];
