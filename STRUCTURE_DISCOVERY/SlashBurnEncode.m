@@ -31,7 +31,7 @@ function [ ] = SlashBurnEncode(AOrig, k, outFolder, info, starOption, minSize, g
 global model;
 global model_idx;
 
-dir=0;
+dir=0; % dir: direction 标记是否为有向图（1为有向，0为无向）
 % cost of encoding all the structures
 cost_ALLencoded_struct = 0;
 % if greedy is selected, all_costs has all the costs by adding one extra
