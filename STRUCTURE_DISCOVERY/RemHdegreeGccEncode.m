@@ -17,8 +17,9 @@ else % 邻接矩阵为无向的（对称的）
 end
 [Dsort, I] = sort(D); % 升序排列，I：Dsort的每个元素在D中的索引；
 
-topind = flipud(I(n-k+1:n)); % 取倒数K个，然后降序排列（最大的K个）
+topind = flipud(I(n-k+1:n)); % 取倒数K个，然后降序排列（度数最大的K个节点）
 
+% 度数最大的K个节点的邻接表都置为0
 B(topind, :) = 0;
 B(:, topind) = 0;
 
