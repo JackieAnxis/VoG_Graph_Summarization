@@ -1,3 +1,21 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                           %
+%                                                                           %
+% Parameter                                                                 %
+%   B: adjacency matrix of a graph. We assume symmetric matrix with    		%
+%           both upper- and lower- diagonal elements are set.               %
+%   k(2): # of nodes to cut in SlashBurn                                    %
+%	dir(0): direction, 0 means undirected, 1 means directed.				%
+%   out_fid: file id to output the model                               		%
+%   topind: top k nodes with largest degree                                 %
+%	top_gccind([1:n]): node IDs of greatest connected components; 			%
+%	N_tot(n): 																%
+%   info(false): true for detailed output (encoding gain reported)			%
+%		         false for brief output (no encoding gain reported)			%
+%   minSize(3): minimum size of structure that we want to encode			%
+%                                                                           %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 function [cur_gccind,cur_disind] = ExtractGccEncode(B, out_fid, topind, top_gccind, N_tot, info, minSize)
 
 % Find strongly or weakly connected components in graph
@@ -23,18 +41,17 @@ cur_disind = zeros(0, 0);
 
 for k = 2:S
     curind = find(C == I(k)); % 属于第k个连通子图的节点
-    if (size(curind, 2) == 1) % 如果是独立的节点
-        % 判断该独立节点是否在topind（度数最大的几个节点）中
+    if (size(curind, 2) == 1) % size为1，孤立节点
+        % 判断该孤立节点是否在topind（度数最大的几个节点）中
         % 是为1，不是为0
         mask = ismember(curind, topind);
-        if sum(mask) == 1
-             % 该节点在topind中，也就是说该图根本不连通
+        if sum(mask) == 1 % 该节点在topind中，也即说明度数为0的孤立节点已经是最高的K个节点了
             continue;
         end
-    end            
+    end
     % TODO
     if length(curind) > minSize
-%     EncodeConnComp(B, curind, top_gccind, out_fid);
+        % EncodeConnComp(B, curind, top_gccind, out_fid);
         EncodeSubgraph(B, curind, top_gccind, N_tot, out_fid, info, minSize);
     end
     cur_disind = [cur_disind curind];

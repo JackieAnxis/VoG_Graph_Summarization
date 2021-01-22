@@ -84,9 +84,9 @@ elseif (m == 2*(n-1))   % chain or star
         fprintf(out_fid, ' %d', top_gccind( curind(d1ind(1)) ) );
         
         d2ind = find(degree==2);
-        %for i=1:size(d2ind, 2)
+        % for i=1:size(d2ind, 2)
         fprintf(out_fid, ' %d', top_gccind( curind(d2ind(1:size(d2ind, 2))) ) );
-        %end
+        % end
         
         fprintf(out_fid, ' %d', top_gccind( curind(d1ind(2) )) );
         

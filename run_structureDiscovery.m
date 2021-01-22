@@ -21,6 +21,13 @@ global model;
 model = struct('code', {}, 'edges', {}, 'nodes1', {}, 'nodes2', {}, 'benefit', {}, 'benefit_notEnc', {});
 global model_idx;
 model_idx = 0;
+% 1. orig_sym_nodiag: 对称邻接矩阵（无向）
+% 2. 2: 
+% 3. output_model_greedy: 输出路径
+% 4. false:
+% 5. false: 
+% 6. 3: 
+% 7. unweighted_graph: 图文件的输入路径
 SlashBurnEncode( orig_sym_nodiag, 2, output_model_greedy, false, false, 3, unweighted_graph);
 
 % quit

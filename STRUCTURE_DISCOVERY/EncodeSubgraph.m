@@ -1,12 +1,22 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                           %
+% Encode the connected component from SlashBurn:                            %
+%   find whether it is clique, near-clique, star, chain or bipartite-core   %
+%                                                                           %
+% Parameter                                                                 %
+%   B: adjacency matrix of a graph. We assume symmetric matrix with    		%
+%           both upper- and lower- diagonal elements are set.               %
+%   curind: ? %
+%	top_gccind: ?node IDs of greatest connected components;                 %
+%	N_tot(n): # of total nodes                                              %
+%   out_fid: file id to output the model                               		%
+%   info(false): true for detailed output (encoding gain reported)			%
+%		         false for brief output (no encoding gain reported)			%
+%   minSize(3): minimum size of structure that we want to encode			%
+%                                                                           %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 function [] = EncodeSubgraph( B, curind, top_gccind, N_tot, out_fid, info, minSize )
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%% Encode the connected component from SlashBurn:                         %
-%   find whether it is clique, near-clique, star, chain or bipartite-core %
-%   info: true (output the mdl benefit at the model file) /               %
-%         false (Jilles' format for model file)                           %
-%   minSize: smallest size of reported structures (number of nodes)       %
-%  Author: Danai Koutra                                                   %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 Asmall = B(curind,curind);
 

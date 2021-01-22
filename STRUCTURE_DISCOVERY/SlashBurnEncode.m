@@ -7,17 +7,17 @@
 % SlashBurn Encode: encode graph using SlashBurn                            %
 %                                                                           %
 % Parameter                                                                 %
-%   AOrig : adjacency matrix of a graph. We assume symmetric matrix with    %
+%   AOrig: adjacency matrix of a graph. We assume symmetric matrix with     %
 %           both upper- and lower- diagonal elements are set.               %
-%   k : # of nodes to cut in SlashBurn                                      %
+%   k(2): # of nodes to cut in SlashBurn                                    %
 %   outfile : file name to output the model                                 %
-%   info : true for detailed output (encoding gain reported)                %
-%          false for brief output (no encoding gain reported)               %
-%   starOption: true for encoding the vicinities of top degree nodes as     %
-%                     stars                                                 %
-%               false for encoding these vicinities as stars, nc or fc      %
-%               (depending on the smallest mdl cost)                        %
-%   minSize: minimum size of structure that we want to encode               %
+%   info(false): true for detailed output (encoding gain reported)          %
+%                false for brief output (no encoding gain reported)         %
+%   starOption(false): true for encoding the vicinities of top degree       %
+%                      nodes as stars                                       %
+%                      false for encoding these vicinities as stars,        %
+%                      nc or fc (depending on the smallest mdl cost)        %
+%   minSize(3): minimum size of structure that we want to encode            %
 %   graphFile: path to the edge file                                        %
 %                                                                           %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -31,7 +31,7 @@ function [ ] = SlashBurnEncode(AOrig, k, outFolder, info, starOption, minSize, g
 global model;
 global model_idx;
 
-dir=0; % dir: direction 标记是否为有向图（1为有向，0为无向）
+dir = 0; % dir: direction 标记是否为有向图（1为有向，0为无向）
 % cost of encoding all the structures
 cost_ALLencoded_struct = 0;
 % if greedy is selected, all_costs has all the costs by adding one extra
@@ -72,7 +72,7 @@ while niter == 0 || cur_gccsize > k
     niter = niter+1;
     fprintf('Iteration %d...\n', niter);
     
-    A = AOrig(gccind,gccind);
+    A = AOrig(gccind, gccind);
     [disind,newgccind,topind] = RemHdegreeGccEncode(A, k, dir, out_fid, gccind, n, info, minSize);
     % save 'star' structures
     star_cores = topind;

@@ -1,6 +1,22 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                           %
+% RemHdegreeGccEncode: encode graph using SlashBurn                         %
+%                                                                           %
+% Parameter                                                                 %
+%   B: adjacency matrix of a graph. We assume symmetric matrix with    		%
+%           both upper- and lower- diagonal elements are set.               %
+%   k(2): # of nodes to cut in SlashBurn                                    %
+%	dir(0): direction, 0 means undirected, 1 means directed.				%
+%   out_fid: file id to output the model                               		%
+%	top_gccind([1:n]): node IDs of greatest connected components; 			%
+%	N_tot(n): 																%
+%   info(false): true for detailed output (encoding gain reported)			%
+%		         false for brief output (no encoding gain reported)			%
+%   minSize(3): minimum size of structure that we want to encode			%
+%                                                                           %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-function [disind,gccind,topind] = RemHdegreeGccEncode(B,k,dir,out_fid, top_gccind, N_tot, info, minSize)
-
+function [disind,gccind,topind] = RemHdegreeGccEncode(B, k, dir, out_fid, top_gccind, N_tot, info, minSize)
 
 if nargin < 3
     dir = 1;
