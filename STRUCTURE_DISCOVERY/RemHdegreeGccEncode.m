@@ -1,7 +1,7 @@
 function [disind, gccind, topind] = RemHdegreeGccEncode(B, k, dir, out_fid, top_gccind, N_tot, info, minSize)
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     %                                                                           %
-    % RemHdegreeGccEncode: encode graph using SlashBurn                         %
+    % encode graph using SlashBurn                         %
     %                                                                           %
     % Parameter                                                                 %
     %   B: adjacency matrix of a graph. We assume symmetric matrix with    		%

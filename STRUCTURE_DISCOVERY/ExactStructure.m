@@ -1,4 +1,13 @@
-% Encode the connected component from SlashBurn.
+%
+% @param{Asmall}: adjacency matrix of the subgraph.
+% ? @param{curind}: nodes of the subgraph you want to encode
+% ? @param{top_gccind}:
+% @param{N_tot}: # of total nodes
+% @param{out_fid}: file id to output the model
+% @param{info}: true for detailed output (encoding gain reported) OR false for brief output (no encoding gain reported)
+% @param{minSize}: minimum size of structure that we want to encode
+%
+% ? @return{exact_found}:
 function [exact_found] = ExactStructure(Asmall, curind, top_gccind, N_tot, out_fid, info, minSize)
 
     global model;
@@ -21,9 +30,11 @@ function [exact_found] = ExactStructure(Asmall, curind, top_gccind, N_tot, out_f
     % cost of not encoding the structure at all (noise)
     cost_notEnc = compute_encodingCost('err', 0, 0, [nnz(Asmall) n^2 - nnz(Asmall)]);
 
-    if (m == n * n - n)% full clique
+    if (m == n * n - n)
+        % full clique
 
-        if n ~= 2
+        if n >= 2
+            % more than two nodes
             MDLcost_fc = compute_encodingCost('fc', N_tot, n, zeros(n, n));
             costGain = MDLcost_nc - MDLcost_fc;
             costGain_notEnc = cost_notEnc - MDLcost_fc;
@@ -42,9 +53,9 @@ function [exact_found] = ExactStructure(Asmall, curind, top_gccind, N_tot, out_f
             exact_found = true;
             model_idx = model_idx + 1;
             model(model_idx) = struct('code', 'fc', 'edges', 0, 'nodes1', top_gccind(curind), 'nodes2', [], 'benefit', costGain, 'benefit_notEnc', costGain_notEnc);
-            %entries = size(model, 2);
-            %model(entries+1) = struct('code', 'fc', 'nodes1', top_gccind(curind), 'nodes2', [], 'benefit', costGain);
-        elseif n == 2
+            % entries = size(model, 2);
+            % model(entries+1) = struct('code', 'fc', 'nodes1', top_gccind(curind), 'nodes2', [], 'benefit', costGain);
+        else
             MDLcost_ch = compute_encodingCost('ch', N_tot, n, zeros(n, n));
             costGain = MDLcost_nc - MDLcost_ch;
             costGain_notEnc = cost_notEnc - MDLcost_ch;
@@ -64,12 +75,14 @@ function [exact_found] = ExactStructure(Asmall, curind, top_gccind, N_tot, out_f
             %model(entries+1) = struct('code', 'ch', 'nodes1', top_gccind(curind), 'nodes2', [], 'benefit', costGain);
         end
 
-    elseif (m == 2 * (n - 1))% chain or star
-        degree = sum(Asmall);
-        ind = find(degree > 0);
-        d1count = 0;
-        d2count = 0;
-        dn1count = 0;
+    elseif (m == 2 * (n - 1))
+        % ? m == 2 * (n - 1) cannot infer it is a chain or star
+        % maybe chain or star
+        degree = sum(Asmall); % degree of each node
+        ind = find(degree > 0); % un-isolated nodes
+        d1count = 0; % count nodes with 1-degree
+        d2count = 0; % count nodes with 2-degree
+        dn1count = 0; % count nodes with (n - 1)-degree
 
         for i = 1:size(degree, 2)
 
@@ -85,7 +98,8 @@ function [exact_found] = ExactStructure(Asmall, curind, top_gccind, N_tot, out_f
 
         %fprintf('d1count=%d, d2count=%d, dn1count=%d\n', d1count, d2count, dn1count);
 
-        if d1count == 2 && d2count == n - 2% chain
+        if d1count == 2 && d2count == n - 2
+            % chain, with 2 nodes with 1-degree and n - 2 nodes with 2-degree
             MDLcost_ch = compute_encodingCost('ch', N_tot, n, zeros(n, n));
             costGain = MDLcost_nc - MDLcost_ch;
             costGain_notEnc = cost_notEnc - MDLcost_ch;
@@ -137,9 +151,11 @@ function [exact_found] = ExactStructure(Asmall, curind, top_gccind, N_tot, out_f
         %evalmax = eigs( Asmall,1, 'LA' );
         %evalmin = eigs( Asmall,1, 'SA' );
         opts.tol = 1e-2;
-        evals = eigs(Asmall, 2, 'lm', opts); % the eigenvalues with maximum magnitude
+        evals = eigs(Asmall, 2, 'lm', opts); % the eigenvalues
 
-        if (max(evals) == -min(evals))% bipartite graph (special case: star)
+        if (max(evals) == -min(evals))
+            % if max eigenvalue and min eigenvalue are opposite
+            % bipartite graph (special case: star)
             [set1, set2] = BFScoloring(Asmall);
 
             if length(set1) + length(set2) < minSize

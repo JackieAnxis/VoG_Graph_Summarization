@@ -1,21 +1,16 @@
+% Computation of the local encoding cost of a given substructure:
+%
+% @param{subgraph}: 'fc', 'nc', 'st', 'ch', 'bc', 'err'
+% @param{N_tot}: total number of nodes in the whole graph
+% @param{n_sub}: number of nodes in the given substructure OR number of nodes in the first set of a 'bc' (k)
+% @param{E}: error matrix
+% @param{n_sub2}: optional - number of nodes in the second set of a 'bc' (l)
+% @param{nb_edges}: optional -  edges *between* the two sets of the near-bipartite core
+% @param{ca}: true if cross-association is used (encoding of nc)
+%
+% @return{MDLcost}: model_cost + error_cost
+
 function [MDLcost] = compute_encodingCost(subgraph, N_tot, n_sub, E, n_sub2, nb_edges, ca)
-    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    %% Computation of the local encoding cost of a given substructure:        %
-    %   INPUTS:                                                               %
-    %   subgraph: 'fc', 'nc', 'st', 'ch', 'bc', 'err'                         %
-    %   N_tot:  total number of nodes in the whole graph                      %
-    %   n_sub: number of nodes in the given substructure OR                   %
-    %          number of nodes in the first set of a 'bc' (k)                 %
-    %   E: error matrix                                                       %
-    %   n_sub2: optional - number of nodes in the second set of a 'bc' (l)    %
-    %   nb_edges: optional -  edges *between* the two sets of                 %
-    %                        the near-bipartite core                          %
-    %   ca: true if cross-association is used (encoding of nc)                %
-    %  ---------------                                                        %
-    %  OUTPUTS:                                                               %
-    %   MDLcost = model_cost + error_cost                                     %
-    %  Author: Danai Koutra                                                   %
-    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
     if nargin < 7
         ca = false;
@@ -26,17 +21,19 @@ function [MDLcost] = compute_encodingCost(subgraph, N_tot, n_sub, E, n_sub2, nb_
     switch subgraph
         case 'fc'
 
-            if E(1) == 0 || E(2) == 0% no excluded edges
-                MDLcost = LN(n_sub) + l2cnk(N_tot, n_sub); %log2(nchoosek(vpi(N_tot), n_sub));
+            if E(1) == 0 || E(2) == 0
+                % no excluded edges, E(x) means fold E into array by column and find the xth element
+                MDLcost = LN(n_sub) + l2cnk(N_tot, n_sub); % log2(nchoosek(vpi(N_tot), n_sub));
             else
-                MDLcost = LN(n_sub) + l2cnk(N_tot, n_sub) + Lnu_opt(E); %log2(nchoosek(vpi(N_tot), n_sub)) + Lnu_opt(E);
+                MDLcost = LN(n_sub) + l2cnk(N_tot, n_sub) + Lnu_opt(E); % log2(nchoosek(vpi(N_tot), n_sub)) + Lnu_opt(E);
             end
 
         case 'nc'
             % for the near clique: E is the Asmall matrix
             edges_inc = nnz(E);
 
-            if ca == true% cross-association for bipartite graph (rectangular mat)
+            if ca == true
+                % cross-association for bipartite graph (rectangular mat)
                 edges_exc = size(E, 1) * size(E, 2) - nnz(E); %sum(E(:)==0);% computing the mdl cost of a bipartite graph encoded as near clique
             else
                 edges_exc = size(E, 1) * size(E, 2) - nnz(E); %sum(E(:)==0)-n_sub;% diagonal elements are always 0 (no self-loops)

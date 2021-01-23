@@ -1,5 +1,5 @@
-const graphFileName = "./DATA/cliqueStarClique.out"
-// const graphFileName = "./DATA/miserables.out"
+// const graphFileName = "./DATA/cliqueStarClique.out"
+const graphFileName = "./DATA/miserables.out"
 d3.text(graphFileName).then(function (text) {
     const rows = text.split("\n")
     const nodeSet = new Set()

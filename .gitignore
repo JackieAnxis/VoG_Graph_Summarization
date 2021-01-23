@@ -1,4 +1,5 @@
 *.pyc
-*.txt
-*.model
-*.out
+# *.txt
+# *.model
+# *.out
+*.asv

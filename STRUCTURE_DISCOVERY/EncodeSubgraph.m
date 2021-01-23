@@ -1,21 +1,13 @@
+% Encode the connected component from SlashBurn: find whether it is clique, near-clique, star, chain or bipartite-core
+% @param{B}: adjacency matrix of a graph. We assume symmetric matrix with both upper- and lower- diagonal elements are set.
+% ? @param{curind}: nodes of the subgraph you want to encode
+% ? @param{top_gccind}:
+% @param{N_tot}: # of total nodes
+% @param{out_fid}: file id to output the model
+% @param{info}: true for detailed output (encoding gain reported) OR false for brief output (no encoding gain reported)
+% @param{minSize}: minimum size of structure that we want to encode
+
 function [] = EncodeSubgraph(B, curind, top_gccind, N_tot, out_fid, info, minSize)
-    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    %                                                                           %
-    % Encode the connected component from SlashBurn:                            %
-    %   find whether it is clique, near-clique, star, chain or bipartite-core   %
-    %                                                                           %
-    % Parameter                                                                 %
-    %   B: adjacency matrix of a graph. We assume symmetric matrix with    		%
-    %           both upper- and lower- diagonal elements are set.               %
-    %   curind: ? %
-    %	top_gccind: ?node IDs of greatest connected components;                 %
-    %	N_tot(n): # of total nodes                                              %
-    %   out_fid: file id to output the model                               		%
-    %   info(false): true for detailed output (encoding gain reported)			%
-    %		         false for brief output (no encoding gain reported)			%
-    %   minSize(3): minimum size of structure that we want to encode			%
-    %                                                                           %
-    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
     Asmall = B(curind, curind);
 
