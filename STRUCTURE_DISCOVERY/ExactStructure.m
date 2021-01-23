@@ -1,4 +1,4 @@
-%
+% Test whether Asmall is exactly a pre-defined structure, if so, output it with its nodes into out_fid
 % @param{Asmall}: adjacency matrix of the subgraph.
 % ? @param{curind}: nodes of the subgraph you want to encode
 % ? @param{top_gccind}:
@@ -7,7 +7,7 @@
 % @param{info}: true for detailed output (encoding gain reported) OR false for brief output (no encoding gain reported)
 % @param{minSize}: minimum size of structure that we want to encode
 %
-% ? @return{exact_found}:
+% @return{exact_found}: whether Asmall is exactly a pre-defined structure (fc, bc, ...)
 function [exact_found] = ExactStructure(Asmall, curind, top_gccind, N_tot, out_fid, info, minSize)
 
     global model;
@@ -53,9 +53,8 @@ function [exact_found] = ExactStructure(Asmall, curind, top_gccind, N_tot, out_f
             exact_found = true;
             model_idx = model_idx + 1;
             model(model_idx) = struct('code', 'fc', 'edges', 0, 'nodes1', top_gccind(curind), 'nodes2', [], 'benefit', costGain, 'benefit_notEnc', costGain_notEnc);
-            % entries = size(model, 2);
-            % model(entries+1) = struct('code', 'fc', 'nodes1', top_gccind(curind), 'nodes2', [], 'benefit', costGain);
         else
+            % 2-nodes clique: a chain
             MDLcost_ch = compute_encodingCost('ch', N_tot, n, zeros(n, n));
             costGain = MDLcost_nc - MDLcost_ch;
             costGain_notEnc = cost_notEnc - MDLcost_ch;
@@ -71,12 +70,9 @@ function [exact_found] = ExactStructure(Asmall, curind, top_gccind, N_tot, out_f
             exact_found = true;
             model_idx = model_idx + 1;
             model(model_idx) = struct('code', 'ch', 'edges', 0, 'nodes1', top_gccind(curind), 'nodes2', [], 'benefit', costGain, 'benefit_notEnc', costGain_notEnc);
-            %entries = size(model, 2);
-            %model(entries+1) = struct('code', 'ch', 'nodes1', top_gccind(curind), 'nodes2', [], 'benefit', costGain);
         end
 
     elseif (m == 2 * (n - 1))
-        % ? m == 2 * (n - 1) cannot infer it is a chain or star
         % maybe chain or star
         degree = sum(Asmall); % degree of each node
         ind = find(degree > 0); % un-isolated nodes
@@ -96,8 +92,6 @@ function [exact_found] = ExactStructure(Asmall, curind, top_gccind, N_tot, out_f
 
         end
 
-        %fprintf('d1count=%d, d2count=%d, dn1count=%d\n', d1count, d2count, dn1count);
-
         if d1count == 2 && d2count == n - 2
             % chain, with 2 nodes with 1-degree and n - 2 nodes with 2-degree
             MDLcost_ch = compute_encodingCost('ch', N_tot, n, zeros(n, n));
@@ -108,10 +102,9 @@ function [exact_found] = ExactStructure(Asmall, curind, top_gccind, N_tot, out_f
             fprintf(out_fid, ' %d', top_gccind(curind(d1ind(1))));
 
             d2ind = find(degree == 2);
-            % for i=1:size(d2ind, 2)
+            % output 2-degree nodes id
             fprintf(out_fid, ' %d', top_gccind(curind(d2ind(1:size(d2ind, 2)))));
-            % end
-
+            % output the two 1-degree nodes id
             fprintf(out_fid, ' %d', top_gccind(curind(d1ind(2))));
 
             if info == false
@@ -123,39 +116,15 @@ function [exact_found] = ExactStructure(Asmall, curind, top_gccind, N_tot, out_f
             exact_found = true;
             model_idx = model_idx + 1;
             model(model_idx) = struct('code', 'ch', 'edges', 0, 'nodes1', [top_gccind(curind(d1ind(1))) top_gccind(curind(d2ind(1:size(d2ind, 2)))) top_gccind(curind(d1ind(2)))], 'nodes2', [], 'benefit', costGain, 'benefit_notEnc', costGain_notEnc);
-            %entries = size(model, 2);
-            %model(entries+1) = struct('code', 'ch', 'nodes1', top_gccind(curind), 'nodes2', [], 'benefit', costGain);
-
-            %     elseif d1count==n-1 & dn1count==1   % star
-            %         fprintf(out_fid, 'st');
-            %         dn1ind = find( degree == n-1);
-            %         fprintf(out_fid, ' %d,', top_gccind( dn1ind(1) ) );
-            %
-            %         d1ind = find(degree==2);
-            %         for i=1:size(d1ind, 2)
-            %             fprintf(out_fid, ' %d', top_gccind( d1ind(i) ) );
-            %         end
-            %
-            %         fprintf(out_fid, '\n');
-            %         exact_found = true;
-            %     end
-            % else            % near clique
-            %     fprintf(out_fid, 'nc %d,', m/2);
-            %     for i=1:size(curind, 2)
-            %         fprintf(out_fid, ' %d', top_gccind( curind(i) ) );
-            %     end
-            %     fprintf(out_fid, '\n');
         end
 
     else
-        %evalmax = eigs( Asmall,1, 'LA' );
-        %evalmin = eigs( Asmall,1, 'SA' );
         opts.tol = 1e-2;
-        evals = eigs(Asmall, 2, 'lm', opts); % the eigenvalues
+        evals = eigs(Asmall, 2, 'lm', opts); % 2 eigenvalues with largest maganitudes
 
         if (max(evals) == -min(evals))
-            % if max eigenvalue and min eigenvalue are opposite
-            % bipartite graph (special case: star)
+            % if the opposite of the max eigenvalue is also Asmall's eigenvalue,
+            % it is a bipartite graph (special case: star) maybe not a bipartite cire.
             [set1, set2] = BFScoloring(Asmall);
 
             if length(set1) + length(set2) < minSize
@@ -164,6 +133,7 @@ function [exact_found] = ExactStructure(Asmall, curind, top_gccind, N_tot, out_f
             end
 
             if length(set1) == 1 && length(set2) == 1
+                % 2-nodes chain is also a special case
                 MDLcost_ch = compute_encodingCost('ch', N_tot, n, zeros(n, n));
                 costGain = MDLcost_nc - MDLcost_ch;
                 costGain_notEnc = cost_notEnc - MDLcost_ch;
@@ -180,6 +150,7 @@ function [exact_found] = ExactStructure(Asmall, curind, top_gccind, N_tot, out_f
                 model_idx = model_idx + 1;
                 model(model_idx) = struct('code', 'ch', 'edges', 0, 'nodes1', top_gccind(curind([set1, set2])), 'nodes2', [], 'benefit', costGain, 'benefit_notEnc', costGain_notEnc);
             elseif length(set1) == 1
+                % star
                 MDLcost_st = compute_encodingCost('st', N_tot, n, zeros(n, n));
                 costGain = MDLcost_nc - MDLcost_st;
                 costGain_notEnc = cost_notEnc - MDLcost_st;
@@ -195,9 +166,8 @@ function [exact_found] = ExactStructure(Asmall, curind, top_gccind, N_tot, out_f
                 exact_found = true;
                 model_idx = model_idx + 1;
                 model(model_idx) = struct('code', 'fc', 'edges', 0, 'nodes1', top_gccind(curind), 'nodes2', [], 'benefit', costGain, 'benefit_notEnc', costGain_notEnc);
-                %entries = size(model, 2);
-                %model(entries+1) = struct('code', 'st', 'nodes1', top_gccind(curind(set1)), 'nodes2', top_gccind(curind(set2)), 'benefit', costGain);
             elseif length(set2) == 1
+                % star
                 MDLcost_st = compute_encodingCost('st', N_tot, n, zeros(n, n));
                 costGain = MDLcost_nc - MDLcost_st;
                 costGain_notEnc = cost_notEnc - MDLcost_st;
@@ -213,13 +183,12 @@ function [exact_found] = ExactStructure(Asmall, curind, top_gccind, N_tot, out_f
                 exact_found = true;
                 model_idx = model_idx + 1;
                 model(model_idx) = struct('code', 'st', 'edges', 0, 'nodes1', top_gccind(curind(set1)), 'nodes2', top_gccind(curind(set1)), 'benefit', costGain, 'benefit_notEnc', costGain_notEnc);
-                %entries = size(model, 2);
-                %model(entries+1) = struct('code', 'st', 'nodes1', top_gccind(curind(set2)), 'nodes2', top_gccind(curind(set1)), 'benefit', costGain);
-            else % bipartite graph
+            else
+                % bipartite graph
                 degrees = sum(Asmall, 2);
-                % First check if it is bipartite core: The degrees of the nodes
-                % in the first set should be equal to the number of nodes in
-                % the second set, and vice versa.
+                % First check if it is bipartite core:
+                % The degrees of the nodes in the first set should be
+                % equal to the number of nodes in the second set, and vice versa.
                 if sum(full(degrees(set1)) ~= length(set2) * ones(length(set1), 1)) && ...
                         sum(full(degrees(set2)) ~= length(set1) * ones(length(set2), 1)) == 0
                     MDLcost_bc = compute_encodingCost('bc', N_tot, length(set1), zeros(n, n), length(set2));
@@ -263,7 +232,8 @@ function [exact_found] = ExactStructure(Asmall, curind, top_gccind, N_tot, out_f
                         exact_found = true;
                         model_idx = model_idx + 1;
                         model(model_idx) = struct('code', 'bc', 'edges', 0, 'nodes1', top_gccind(curind(set1)), 'nodes2', top_gccind(curind(set2)), 'benefit', costGain, 'benefit_notEnc', costGain_notEnc);
-                    else % better to encode it as near-bipartite core
+                    else
+                        % better to encode it as near-bipartite core
                         costGain = MDLcost_nc - MDLcost_nb;
                         costGain_notEnc = cost_notEnc - MDLcost_nb;
                         fprintf(out_fid, 'nb');
@@ -284,8 +254,6 @@ function [exact_found] = ExactStructure(Asmall, curind, top_gccind, N_tot, out_f
 
                 end
 
-                %entries = size(model, 2);
-                %model(entries+1) = struct('code', 'bc', 'nodes1', top_gccind(curind(set1)), 'nodes2', top_gccind(curind(set2)), 'benefit', costGain);
             end
 
         end

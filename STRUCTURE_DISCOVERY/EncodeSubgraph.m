@@ -30,8 +30,8 @@ function [] = EncodeSubgraph(B, curind, top_gccind, N_tot, out_fid, info, minSiz
     %   and compute the MDL cost of each encoding.
     %%%%% TO DO: add some heuristics before we try to encode as chain for
     %%%%% instance -- check the degree distribution.
-    % maxint = 2147483647
-    MDLcosts = ones(1, 5) * 2147483647;
+    maxint = 2147483647
+    MDLcosts = ones(1, 5) * maxint;
 
     if (exact_found == false)
         [MDLcostFC, MDLcostNC] = mdlCostAsfANDnClique(Asmall, N_tot);
