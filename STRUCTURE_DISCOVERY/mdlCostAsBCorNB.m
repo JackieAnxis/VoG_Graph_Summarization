@@ -1,11 +1,16 @@
+% Encode given graph as bipartite core
+% max cut problem --> NP hard
+% Heuristic: we use FaBP with heterophily and we initialize two nodes that are connected by an edge in opposite classes
+%
+% @param{Asmall}: the adjacent matrix of the subgraph
+% @param{N_tot}: # of whole graph nodes (total)
+%
+% @return{MDLcostBC}: cost of encode as bipartite core
+% @return{MDLcostNB}: cost of encode as near-bipartite core
+% @return{set1}: nodes in one side of the bipartite
+% @return{set2}: nodes in the other side of the bipartite
+
 function [ MDLcostBC, MDLcostNB, set1, set2 ] = mdlCostAsBCorNB( Asmall, N_tot )
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%% Encode given graph as bipartite core                                   %
-%  max cut problem --> NP hard                                            %
-% Heuristic: we use FaBP with heterophily and we initialize               %
-%            two nodes that are connected by an edge in opposite classes  %
-%  Author: Danai Koutra                                                   %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 %% Constants and variables of FaBP
 % heterophily factor
@@ -33,7 +38,7 @@ phi(idx) = positive;
 phi(neighbors) = negative;
 
 %% FaBP: main equation
-b = ( matI + a * D - c * Asmall ) \ phi;
+b = ( matI + a * D - c * Asmall ) \ phi; % x = A\B solves the system of linear equations A*x = B
 
 %% Find the members of the two sets
 set1 = b > 0;
@@ -55,12 +60,12 @@ set2 = b < 0;
 
 % 1s in the error matrix
 % missing edges in bc + extra edges within sets
-E(1) = 2* (sum(set1)*sum(set2)-nnz(Asmall(set1,set2))) + nnz(Asmall(set1, set1)) + nnz(Asmall(set2, set2));
+E(1) = 2 * (sum(set1) * sum(set2) - nnz(Asmall(set1, set2))) + nnz(Asmall(set1, set1)) + nnz(Asmall(set2, set2));
 % 0s in the error matrix
 E(2) = n^2 - E(1);
 
 %% MDL cost of encoding given substructure as a bipartite core
-MDLcostBC = compute_encodingCost( 'bc', N_tot, sum(set1), E, sum(set2) );
+MDLcostBC = compute_encodingCost('bc', N_tot, sum(set1), E, sum(set2));
 
 %% Creating the adjacency matrix for the nb model (w/o noise).
 % % % According to this model, some nodes in set1 are connected to some of the
@@ -82,7 +87,7 @@ E(1) = nnz(Asmall(set1, set1)) + nnz(Asmall(set2, set2));
 E(2) = n^2 - E(1);
 
 %% MDL cost of encoding given substructure as a bipartite core
-MDLcostNB = compute_encodingCost( 'nb', N_tot, sum(set1), E, sum(set2), [nnz(Asmall(set1,set2)), sum(set1)*sum(set2)-nnz(Asmall(set1,set2))] );
+MDLcostNB = compute_encodingCost('nb', N_tot, sum(set1), E, sum(set2), [nnz(Asmall(set1, set2)), sum(set1) * sum(set2) - nnz(Asmall(set1, set2))]);
 
 % % if nargin == 4 && ~isempty(set1) && ~isempty(set2)
 % %     fprintf(out_fid, 'bc');

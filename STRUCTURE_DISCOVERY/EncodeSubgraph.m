@@ -44,10 +44,10 @@ function [] = EncodeSubgraph(B, curind, top_gccind, N_tot, out_fid, info, minSiz
             MDLcosts = [MDLcosts, MDLcostCH];
         end
 
-        %% Find which structure best describes the given submatrix: i.e., find the
-        %  structure that has the minimum MDL cost. Then output to the model file
-        %  this structure and its encoding gain in bits (mdlcostNC -
-        %  mdlCostStructure).
+        % Find which structure best describes the given submatrix: i.e., find the
+        % structure that has the minimum MDL cost. Then output to the model file
+        % this structure and its encoding gain in bits (mdlcostNC -
+        % mdlCostStructure).
         [~, idxMin] = min(MDLcosts);
 
         cost_notEnc = compute_encodingCost('err', 0, 0, [nnz(Asmall) n^2 - nnz(Asmall)]);
