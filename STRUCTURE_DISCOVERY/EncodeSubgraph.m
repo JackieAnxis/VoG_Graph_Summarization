@@ -1,4 +1,4 @@
-% Encode the connected component from SlashBurn: find whether it is clique, near-clique, star, chain or bipartite-core
+% Encode(output) the connected component from SlashBurn: find whether it is clique, near-clique, star, chain or bipartite-core
 % @param{B}: adjacency matrix of a graph. We assume symmetric matrix with both upper- and lower- diagonal elements are set.
 % ? @param{curind}: nodes of the subgraph you want to encode
 % ? @param{top_gccind}:

@@ -1,4 +1,4 @@
-%
+% Find and sort(descend) graph connected components, encode connected components with MDLcosts except the largest connected component
 % @param{B}: adjacency matrix of a graph. We assume symmetric matrix with both upper- and lower- diagonal elements are set.
 % @param{k}(2): # of nodes to cut in SlashBurn
 % @param{dir}(0): direction, 0 means undirected, 1 means directed.
@@ -9,8 +9,8 @@
 % @param{info}(false): true for detailed output (encoding gain reported) OR false for brief output (no encoding gain reported)
 % @param{minSize}(3): minimum size of structure that we want to encode
 %
-% @return{cur_gccind}: nodes(id) in the greatest connected components
-% ? @return{cur_disind}:
+% @return{cur_gccind}: nodes(id) in the largest graph connected components
+% @return{cur_disind}: nodes(id) in other graph connected components (descend)
 
 function [cur_gccind, cur_disind] = ExtractGccEncode(B, out_fid, topind, top_gccind, N_tot, info, minSize)
     % Find strongly or weakly connected components in graph
@@ -37,7 +37,7 @@ function [cur_gccind, cur_disind] = ExtractGccEncode(B, out_fid, topind, top_gcc
 
     for k = 2:S
         % 从第二大的连通子图开始
-        curind = find(C == I(k)); % nodes in the kth greatest connected components
+        curind = find(C == I(k)); % nodes in the kth largest graph connected components
 
         if (size(curind, 2) == 1)
             % size == 1, only one node in this component

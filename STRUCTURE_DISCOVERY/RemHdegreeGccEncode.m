@@ -1,23 +1,17 @@
-% REMove High DEGREE nodes of Greatest Connected Components and Encode
-
+% Remove nodes with degree in top k, and encode connected components with different basic subgraph types (fc, bc, ...)
+% @param{B}: adjacency matrix of a graph. We assume symmetric matrix with both upper- and lower- diagonal elements are set.
+% @param{k}(2): # of nodes to cut in SlashBurn
+% @param{dir}(0): direction, 0 means undirected, 1 means directed.
+% @param{out_fid}: file id to output the model
+% @param{top_gccind}([1:n]): node IDs of greatest connected components;
+% @param{N_tot}(n):
+% @param{info}(false): true for detailed output (encoding gain reported); false for brief output (no encoding gain reported)
+% @param{minSize}(3): minimum size of structure that we want to encode
+%
+% @return{disind}: connected components nodes array (except the largest connected component)
+% @return{gccind}: largest connected components nodes
+% @return{topind}: nodes with degrees in top k, removed
 function [disind, gccind, topind] = RemHdegreeGccEncode(B, k, dir, out_fid, top_gccind, N_tot, info, minSize)
-    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    %                                                                           %
-    % encode graph using SlashBurn                         %
-    %                                                                           %
-    % Parameter                                                                 %
-    %   B: adjacency matrix of a graph. We assume symmetric matrix with    		%
-    %           both upper- and lower- diagonal elements are set.               %
-    %   k(2): # of nodes to cut in SlashBurn                                    %
-    %	dir(0): direction, 0 means undirected, 1 means directed.				%
-    %   out_fid: file id to output the model                               		%
-    %	top_gccind([1:n]): node IDs of greatest connected components; 			%
-    %	N_tot(n): 																%
-    %   info(false): true for detailed output (encoding gain reported)			%
-    %		         false for brief output (no encoding gain reported)			%
-    %   minSize(3): minimum size of structure that we want to encode			%
-    %                                                                           %
-    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
     if nargin < 3
         dir = 1;
@@ -41,7 +35,7 @@ function [disind, gccind, topind] = RemHdegreeGccEncode(B, k, dir, out_fid, top_
     B(topind, :) = 0;
     B(:, topind) = 0;
 
-    [gccind, disind] = ExtractGccEncode(B, out_fid, topind, top_gccind, N_tot, info, minSize);
+    [gccind, disind] = ExtractGccEncode(B, out_fid, topind, top_gccind, N_tot, info, minSize); % encode connected components with different subgraph types
     %fullind = 1:n;
     %disind = setdiff(fullind, gccind);
     topind = topind';
