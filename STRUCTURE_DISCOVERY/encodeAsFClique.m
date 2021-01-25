@@ -1,4 +1,13 @@
 % Print the encoding of given graph as a full clique
+%? @param{curind}:
+%? @param{top_gccind}:
+% @param{costGain}: cost of encoding as a near-clique - cost of encoding as a full-clique
+% @param{costGain_notEnc}: cost of encoding as a full-clique - the cost of encoding as error (not encoding)
+% @param{out_fid}: output file id
+% @param{info}: whether to output costGain and costGain_notEnc
+%
+% Output is stored in the model file in the form:
+% fc nodes_in_the_clique, costGain
 function [] = encodeAsFClique(curind, top_gccind, costGain, costGain_notEnc, out_fid, info)
 
     global model;

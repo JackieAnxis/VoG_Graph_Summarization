@@ -2,10 +2,13 @@
 %? @param{curind}:
 %? @param{top_gccind}:
 % @param{m}: 2 * # of edges
-% @param{costGain}: always 0
+% @param{costGain}: always 0 in this function
 % @param{costGain_notEnc}: cost of encoding as a near-clique - the cost of encoding as error (not encoding)
 % @param{out_fid}: output file id
-% @param{info}: ...
+% @param{info}: whether to output costGain and costGain_notEnc
+%
+% Output is stored in the model file in the form:
+% nc number_of_edges, nodes_in_the_near_clique, costGain
 function [] = encodeAsNClique(curind, top_gccind, m, costGain, costGain_notEnc, out_fid, info)
 
     global model;
