@@ -3,7 +3,7 @@
 % @param{subgraph}: 'fc', 'nc', 'st', 'ch', 'bc', 'err'
 % @param{N_tot}: total number of nodes in the whole graph
 % @param{n_sub}: number of nodes in the given substructure OR number of nodes in the first set of a 'bc' (k)
-% @param{E}: error matrix
+%? @param{E}: error matrix
 % @param{n_sub2}: optional - number of nodes in the second set of a 'bc' (l)
 % @param{nb_edges}: optional -  edges *between* the two sets of the near-bipartite core
 % @param{ca}: true if cross-association is used (encoding of nc)

@@ -1,3 +1,5 @@
+% REMove High DEGREE nodes of Greatest Connected Components and Encode
+
 function [disind, gccind, topind] = RemHdegreeGccEncode(B, k, dir, out_fid, top_gccind, N_tot, info, minSize)
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     %                                                                           %

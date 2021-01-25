@@ -12,7 +12,7 @@ function [] = EncodeSubgraph(B, curind, top_gccind, N_tot, out_fid, info, minSiz
     Asmall = B(curind, curind);
 
     n = size(curind, 2);
-    m = nnz(Asmall);
+    m = nnz(Asmall); % 2 * # of links
 
     % If the structure has less than 10 nodes, do not report it in the
     % model file
@@ -34,12 +34,16 @@ function [] = EncodeSubgraph(B, curind, top_gccind, N_tot, out_fid, info, minSiz
     MDLcosts = ones(1, 5) * maxint;
 
     if (exact_found == false)
+        % not exactly found, computing mdl encoding of different types
         [MDLcostFC, MDLcostNC] = mdlCostAsfANDnClique(Asmall, N_tot);
         [MDLcostST, hub, spokes] = mdlCostAsStar(Asmall, curind, N_tot);
         [MDLcostBC, MDLcostNB, set1, set2] = mdlCostAsBCorNB(Asmall, N_tot);
         MDLcosts = [MDLcostFC, MDLcostNC, MDLcostST, MDLcostBC, MDLcostNB];
 
         if m < 1.5 * n
+            %? it does not make sense. "m" means twice the number of links, "n" means number of nodes.
+            %? Thus, "m < 1.5 * n" means the number of links is less than 75% of the number of nodes.
+            %? I dont think such un-connected subgraph can be encoded as chain
             [MDLcostCH, chain] = mdlCostAsChain(Asmall, N_tot);
             MDLcosts = [MDLcosts, MDLcostCH];
         end
@@ -53,6 +57,7 @@ function [] = EncodeSubgraph(B, curind, top_gccind, N_tot, out_fid, info, minSiz
         cost_notEnc = compute_encodingCost('err', 0, 0, [nnz(Asmall) n^2 - nnz(Asmall)]);
 
         if isinf(MDLcosts(idxMin)) || isinf(MDLcosts(2))
+            % if minimun cost or the near-clique cost are not infinity
             costGain_notEnc = cost_notEnc - MDLcostNC;
             encodeAsNClique(curind, top_gccind, m, 0, costGain_notEnc, out_fid, info);
             %fprintf(out_fid, ' nan\n');

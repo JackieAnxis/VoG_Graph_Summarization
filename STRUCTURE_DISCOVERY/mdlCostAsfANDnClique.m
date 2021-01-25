@@ -1,4 +1,4 @@
-% Encode given graph as clique and near-clique
+% Encode given graph as Full clique and Near-clique
 % @param{Asmall}: the adjacent matrix of the subgraph
 % @param{N_tot}: # of whole graph nodes (total)
 %
@@ -15,9 +15,9 @@ function [MDLcost_fc, MDLcost_nc] = mdlCostAsfANDnClique(Asmall, N_tot)
     %E1 = xor(M,Asmall);
 
     % 0s in the error matrix  --- edges included in the structure (full clique)
-    E(2) = nnz(Asmall);
+    E(2) = nnz(Asmall); % # of NoNZero elements, included edges
     % 1s in the error matrix  --- edges excluded from the structure (full clique)
-    E(1) = n^2 - n - E(2);
+    E(1) = n^2 - n - E(2); % # of zero elements (except the diagonal), excluded edges
 
     %% MDL cost of encoding given substructure as a full clique
     MDLcost_fc = compute_encodingCost('fc', N_tot, n, E);
