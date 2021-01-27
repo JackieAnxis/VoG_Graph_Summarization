@@ -68,13 +68,22 @@ function [] = SlashBurnEncode(AOrig, k, outFolder, info, starOption, minSize, gr
 
     tic
 
+    % 1. remote top k nodes with largest degree, and produce several connected components
+    % 2. encode these components except the largest
+    % 3. encode top k nodes' ego networks as stars (if the encode length of star can be shortest)
+    % 4. set the largest connected components as the total graph and repeat 1, 2, 3, 4 until # of nodes in largest connected components are less than k
     while niter == 0 || cur_gccsize > k
         niter = niter + 1;
         fprintf('Iteration %d...\n', niter);
 
         A = AOrig(gccind, gccind);
+
+        % disind: connected components nodes array (except the largest connected component)
+        % newgccind: largest connected components nodes
+        % topind: nodes with degrees in top k, removed
         [disind, newgccind, topind] = RemHdegreeGccEncode(A, k, dir, out_fid, gccind, n, info, minSize);
-        % save 'star' structures
+
+        % The ego networks of top k degree nodes can be encode as "star"
         star_cores = topind;
 
         for i = 1:size(star_cores, 2)
@@ -177,22 +186,23 @@ function [] = SlashBurnEncode(AOrig, k, outFolder, info, starOption, minSize, gr
 
         end
 
-        % save structures on the disconnected components
-
         % reorganize the matrix
-        topind_size = size(topind, 2);
+        topind_size = size(topind, 2); % # of topind
 
-        totalind(cur_lpos:cur_lpos + topind_size - 1) = gccind(topind);
+        % cur_lpos: current left position, start from 1
+        % cur_rpos: current right position, start from n
+        totalind(cur_lpos:(cur_lpos + topind_size - 1)) = gccind(topind);
         cur_lpos = cur_lpos + topind_size;
-        totalind(cur_rpos - size(disind, 2) + 1:cur_rpos) = gccind(disind);
+        totalind((cur_rpos - size(disind, 2) + 1):cur_rpos) = gccind(disind);
         cur_rpos = cur_rpos - size(disind, 2);
 
-        gccind = gccind(newgccind);
-        cur_gccsize = size(gccind, 2);
+        gccind = gccind(newgccind); % set current greatest connected components as the total graph, continue to split and encode it.
+        cur_gccsize = size(gccind, 2); % current graph size
 
     end
 
     if k > 1 && cur_gccsize >= 2
+        % if current connected components are still have more than 2 nodes
         EncodeSubgraph(AOrig(gccind, gccind), [1:size(gccind, 2)], gccind, n, out_fid, info, minSize);
     end
 
@@ -200,7 +210,7 @@ function [] = SlashBurnEncode(AOrig, k, outFolder, info, starOption, minSize, gr
     % Method 1: top 10
     % Method 2: greedy selection
 
-    [~, order] = sort([model(:).benefit_notEnc], 'descend');
+    [~, order] = sort([model(:).benefit_notEnc], 'descend'); % sort by description length of encoding as some structure - encoding as Error
     model_ordered = model(order);
     printModel(model_ordered, outfile_ordered);
     all_costs = 0;
