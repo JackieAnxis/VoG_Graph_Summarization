@@ -12,6 +12,7 @@ from graph import Graph
 from model import *
 from mdl import *
 
+# deal with arguments
 if len(sys.argv) <= 1:
     print(
         'at least: <graph.graph> [model.model] [-pC] [-lC] [-pE] [-lE] [-e{NP,NB,TP,TB}]')
@@ -28,7 +29,7 @@ if len(sys.argv) <= 1:
     exit()
 
 if (len(sys.argv) > 1 and ("-v1" in sys.argv)):
-    config.optVerbosity = 1
+    config.optVerbosity = 1  # ? what means optVerbosity
 elif (len(sys.argv) > 1 and ("-v2" in sys.argv)):
     config.optVerbosity = 2
 if (len(sys.argv) > 1 and ("-v3" in sys.argv)):
@@ -36,15 +37,15 @@ if (len(sys.argv) > 1 and ("-v3" in sys.argv)):
 
 t0 = time()
 
-gFilename = sys.argv[1]
-g = Graph()
+gFilename = sys.argv[1]  # graph file
+g = Graph()  # imported from ./graph.py
 g.load(gFilename)
 
 
 if config.optVerbosity > 1:
     print("- graph loaded.")
 
-m = Model()
+m = Model()  # imported from ./model.py
 
 errorEnc = config.optDefaultError
 if (len(sys.argv) > 1 and ("-eNP" in sys.argv or "-NP'" in sys.argv)):
@@ -58,6 +59,8 @@ elif (len(sys.argv) > 1 and ("-eTB" in sys.argv or "-TB" in sys.argv)):
 
 if config.optVerbosity > 1:
     print("- calculating L(M_0,G)")
+
+# L: imported from ./description_length.py
 (l_total_0, l_model_0, l_error_0, E_0) = L(g, m, errorEnc)
 if config.optVerbosity > 1:
     print("- calculated L(M_0,G)")
@@ -72,8 +75,7 @@ if len(sys.argv) > 2 and sys.argv[2][0] != '-':
         print("- M_x loaded.")
     (l_total_x, l_model_x, l_error_x, E_x) = L(g, m, errorEnc)
     # print "M_x:\t", l_total_x, "\t" + str(l_model_x), "\t" + str(l_error_x), "\t" + str(E_x.numModellingErrors), "\t" + str(E_x.numUnmodelledErrors);
-    print(("M_x:\t" + '%.0f' % l_total_x + "\t" + '%.0f' % l_model_x + "\t" + '%.0f' % l_error_x + "\t" + str(E_x.numModellingErrors) + '/' + str(E_x.numCellsCovered -
-                                                                                                                                                  E_x.numCellsExcluded) + '\t' + str(E_x.numUnmodelledErrors) + '/' + str(((E_x.numNodes * E_x.numNodes)-E_x.numNodes)/2 - E_x.numCellsCovered) + '\t\t' + str(E_x.numCellsExcluded)))
+    print(("M_x:\t" + '%.0f' % l_total_x + "\t" + '%.0f' % l_model_x + "\t" + '%.0f' % l_error_x + "\t" + str(E_x.numModellingErrors) + '/' + str(E_x.numCellsCovered - E_x.numCellsExcluded) + '\t' + str(E_x.numUnmodelledErrors) + '/' + str(((E_x.numNodes * E_x.numNodes)-E_x.numNodes)/2 - E_x.numCellsCovered) + '\t\t' + str(E_x.numCellsExcluded)))  # nopep8 (do not format this line)
     # return l_total_x;
 
     # print " -= ", l_total_0 - l_total_x, "\t" + str(l_model_0 - l_model_x), "\t" + str(l_error_0 - l_error_x), "\t" + str(E_0.numModellingErrors - E_x.numModellingErrors), "\t" + str(E_0.numUnmodelledErrors - E_x.numUnmodelledErrors);
