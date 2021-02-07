@@ -1,4 +1,5 @@
-input_file = 'DATA/cliqueStarClique.out';
+% input_file = 'DATA/cliqueStarClique.out';
+input_file = 'DATA/miserables.out';
 unweighted_graph = input_file;
 output_model_greedy = 'DATA';
 output_model_top10 = 'DATA';
@@ -25,7 +26,7 @@ model_idx = 0;
 % 2. 2:
 % 3. output_model_greedy: 输出路径
 % 4. false:
-% 5. false:
+% 5. false: starOption
 % 6. 3:
 % 7. unweighted_graph: 图文件的输入路径
 SlashBurnEncode(orig_sym_nodiag, 2, output_model_greedy, false, false, 3, unweighted_graph);

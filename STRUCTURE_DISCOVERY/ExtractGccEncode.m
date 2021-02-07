@@ -51,7 +51,6 @@ function [cur_gccind, cur_disind] = ExtractGccEncode(B, out_fid, topind, top_gcc
 
         end
 
-        % TODO
         if length(curind) > minSize
             % EncodeConnComp(B, curind, top_gccind, out_fid);
             EncodeSubgraph(B, curind, top_gccind, N_tot, out_fid, info, minSize);

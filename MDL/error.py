@@ -45,13 +45,16 @@ class Error:
             self.modelled = [set() for x in range(len(graph.edges))]
             self.numModellingErrors = 0
 
-            # ?
+            # ! each possible edge will be tested,
+            # ! if some edge is tested, it is covered.
             # a list with $numNodes items, each item is an empty set
             # it means no edge is covered in the beginning
             self.covered = [set() for i in range(self.numNodes)]
             self.numCellsCovered = 0
 
-            # ?
+            # ! all possible edges in near cliqe and near bipartite core are exclusive,
+            # ! which means once they are encoded into a near clique or a near bipartite core,
+            # ! they cannot be included in other structures.
             # a list with $numNodes items, each item is an empty set
             # it means no edge is excluded in the beginning
             self.excluded = [set() for i in range(self.numNodes)]

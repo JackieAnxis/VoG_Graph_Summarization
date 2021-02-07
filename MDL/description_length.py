@@ -130,13 +130,12 @@ def L(G, M, errorEnc):
         elif struc.isJellyFish():
             model_cost += LjellyFish(struc, M, G, E)
 
-    # TODO understand it!!
     # encode the error
     # encode number of additive Errors
     error_cost += 0 if E.numCellsCovered == 0 else log(E.numCellsCovered, 2)
     if ((G.numNodes * G.numNodes - G.numNodes) / 2) - E.numCellsCovered > 0:
-        error_cost += log(((G.numNodes * G.numNodes - G.numNodes) / 2) -
-                          E.numCellsCovered, 2)    # encode number of Errors
+        # uncovered cells exist, some cells are not covered.
+        error_cost += log(((G.numNodes * G.numNodes - G.numNodes) / 2) - E.numCellsCovered, 2)    # encode number of Errors
 
     if errorEnc == "NP":
         error_cost += LErrorNaivePrefix(G, M, E)
@@ -221,6 +220,8 @@ def coverFullClique(G, E, c):
 # Encoded Size of a Near-Clique
 def LnearClique(c, M, G, E):
     # update Error, count coverage
+    # cnt0: # of excluded edges
+    # cnt1: # of included edges
     (cnt0, cnt1) = coverNearClique(G, E, c)
 
     cost = LN(c.numNodes)              # encode number of nodes
